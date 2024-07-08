@@ -10,15 +10,29 @@ document.getElementById('searchBar').addEventListener('input', function() {
 
     var elements = iframeContent.body.getElementsByTagName('*');
     
+    // Function to wrap matched text in a span
+    function highlightText(element, query) {
+        var innerHTML = element.innerHTML;
+        var index = innerHTML.toLowerCase().indexOf(query);
+        if (index >= 0) {
+            innerHTML = innerHTML.substring(0, index) + "<span class='highlight'>" + innerHTML.substring(index, index + query.length) + "</span>" + innerHTML.substring(index + query.length);
+            element.innerHTML = innerHTML;
+        }
+    }
+    
     // Remove previous highlights
     for (var i = 0; i < elements.length; i++) {
-        elements[i].style.backgroundColor = '';
+        elements[i].innerHTML = elements[i].innerHTML.replace(/<span class="highlight">|<\/span>/g, '');
     }
     
     // Highlight current search
-    for (var i = 0; i < elements.length; i++) {
-        if (elements[i].innerText.toLowerCase().includes(query)) {
-            elements[i].style.backgroundColor = 'yellow';
+    if (query === '') {
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].innerHTML = elements[i].innerHTML.replace(/<span class="highlight">|<\/span>/g, '');
+        }
+    } else {
+        for (var i = 0; i < elements.length; i++) {
+            highlightText(elements[i], query);
         }
     }
 });
