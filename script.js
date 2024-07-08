@@ -9,29 +9,55 @@ document.getElementById('searchBar').addEventListener('input', function() {
     }
 
     var elements = iframeContent.body.getElementsByTagName('*');
-    
+
     // Function to wrap matched text in a span
     function highlightText(element, query) {
-        var innerHTML = element.innerHTML;
-        var index = innerHTML.toLowerCase().indexOf(query);
-        if (index >= 0) {
-            innerHTML = innerHTML.substring(0, index) + "<span class='highlight'>" + innerHTML.substring(index, index + query.length) + "</span>" + innerHTML.substring(index + query.length);
-            element.innerHTML = innerHTML;
+        var textNodes = [];
+        // Find all text nodes within the element
+        function getTextNodes(node) {
+            if (node.nodeType === 3) {
+                textNodes.push(node);
+            } else {
+                for (var child = node.firstChild; child; child = child.nextSibling) {
+                    getTextNodes(child);
+                }
+            }
+        }
+        getTextNodes(element);
+
+        for (var i = 0; i < textNodes.length; i++) {
+            var text = textNodes[i].nodeValue;
+            var index = text.toLowerCase().indexOf(query);
+            if (index >= 0) {
+                var span = document.createElement('span');
+                span.className = 'highlight';
+                span.textContent = text.substring(index, index + query.length);
+                var restText = document.createTextNode(text.substring(index + query.length));
+                textNodes[i].nodeValue = text.substring(0, index);
+                textNodes[i].parentNode.insertBefore(span, textNodes[i].nextSibling);
+                textNodes[i].parentNode.insertBefore(restText, span.nextSibling);
+            }
         }
     }
-    
+
     // Remove previous highlights
-    for (var i = 0; i < elements.length; i++) {
-        elements[i].innerHTML = elements[i].innerHTML.replace(/<span class="highlight">|<\/span>/g, '');
+    function removeHighlights(element) {
+        var spans = element.getElementsByClassName('highlight');
+        while (spans.length > 0) {
+            var span = spans[0];
+            var text = span.textContent;
+            span.parentNode.replaceChild(document.createTextNode(text), span);
+        }
     }
-    
-    // Highlight current search
+
+    // Process elements to highlight or reset highlights
     if (query === '') {
         for (var i = 0; i < elements.length; i++) {
-            elements[i].innerHTML = elements[i].innerHTML.replace(/<span class="highlight">|<\/span>/g, '');
+            removeHighlights(elements[i]);
         }
     } else {
         for (var i = 0; i < elements.length; i++) {
+            removeHighlights(elements[i]);
             highlightText(elements[i], query);
         }
     }
