@@ -21,5 +21,11 @@ document.getElementById('searchBar').addEventListener('input', function() {
 
     // Apply highlighting
     var highlightedContent = highlightText(bodyContent, query);
-    iframeContent.body.innerHTML = highlightedContent;
+
+    // Use the DOMParser to safely parse the highlighted HTML
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(highlightedContent, 'text/html');
+
+    // Replace the iframe body with the new content
+    iframeContent.body.innerHTML = doc.body.innerHTML;
 });
