@@ -10,6 +10,18 @@ document.getElementById('searchBar').addEventListener('input', function() {
 
     var bodyContent = iframeContent.body.innerHTML;
 
+    // Function to escape HTML
+    function escapeHtml(text) {
+        var map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
     // Function to highlight text
     function highlightText(content, query) {
         if (query === '') {
@@ -19,8 +31,11 @@ document.getElementById('searchBar').addEventListener('input', function() {
         return content.replace(regex, '<span class="highlight">$1</span>');
     }
 
+    // Escape the body content before applying highlighting
+    var escapedContent = escapeHtml(bodyContent);
+
     // Apply highlighting
-    var highlightedContent = highlightText(bodyContent, query);
+    var highlightedContent = highlightText(escapedContent, query);
 
     // Use the DOMParser to safely parse the highlighted HTML
     var parser = new DOMParser();
