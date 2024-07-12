@@ -12,11 +12,32 @@ document.getElementById('searchBar').addEventListener('input', function() {
 
     // Function to highlight text
     function highlightText(content, query) {
-        if (query === '') {
-            return content.replace(/<span class="highlight">(.*?)<\/span>/g, '$1'); // Remove highlights if query is empty
+        var tempDiv = document.createElement('div');
+        tempDiv.innerHTML = content;
+        var nodes = tempDiv.getElementsByTagName('*');
+
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            for (var j = 0; j < node.childNodes.length; j++) {
+                var child = node.childNodes[j];
+                if (child.nodeType === 3) { // Text node
+                    var text = child.nodeValue;
+                    if (query) {
+                        var regex = new RegExp(`(${query})`, 'gi');
+                        var highlighted = text.replace(regex, '<span class="highlight">$1</span>');
+                        if (highlighted !== text) {
+                            var span = document.createElement('span');
+                            span.innerHTML = highlighted;
+                            node.replaceChild(span, child);
+                        }
+                    } else {
+                        node.replaceChild(document.createTextNode(text), child);
+                    }
+                }
+            }
         }
-        var regex = new RegExp(`(${query})`, 'gi');
-        return content.replace(regex, '<span class="highlight">$1</span>');
+
+        return tempDiv.innerHTML;
     }
 
     // Apply highlighting
