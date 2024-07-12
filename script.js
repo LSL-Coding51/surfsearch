@@ -13,7 +13,7 @@ document.getElementById('searchBar').addEventListener('input', function() {
     // Function to highlight text
     function highlightText(content, query) {
         if (query === '') {
-            return content;  // Return original content if query is empty
+            return content.replace(/<span class="highlight">(.*?)<\/span>/g, '$1'); // Remove highlights if query is empty
         }
         var regex = new RegExp(`(${query})`, 'gi');
         return content.replace(regex, '<span class="highlight">$1</span>');
