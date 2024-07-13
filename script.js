@@ -1,30 +1,15 @@
-document.getElementById('searchBar').addEventListener('input', function() {
-    var query = this.value.toLowerCase();
-    var iframe = document.getElementById('dataFrame');
-    var iframeContent = iframe.contentDocument || iframe.contentWindow.document;
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("search-input");
+    const output = document.getElementById("output");
 
-    if (!iframeContent) {
-        console.error('Iframe content not found');
-        return;
-    }
-
-    var bodyContent = iframeContent.body.innerHTML;
-
-    // Function to highlight text
-    function highlightText(content, query) {
-        if (!query) {
-            return content;
+    input.addEventListener("input", function () {
+        const text = input.value;
+        const regex = new RegExp(`(${text.split('').join('|')})`, 'gi');
+        
+        if (text.length > 0) {
+            output.innerHTML = text.replace(regex, match => `<span class="highlight">${match}</span>`);
+        } else {
+            output.innerHTML = input.value;
         }
-
-        var regex = new RegExp(`(${query})`, 'gi');
-        var highlighted = content.replace(regex, '<span class="highlight">$1</span>');
-
-        return highlighted;
-    }
-
-    // Apply highlighting
-    var highlightedContent = highlightText(bodyContent, query);
-
-    // Replace the iframe body with the new content
-    iframeContent.body.innerHTML = highlightedContent;
+    });
 });
