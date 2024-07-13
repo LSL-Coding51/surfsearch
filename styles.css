@@ -22,3 +22,9 @@ img{
 #homeTopImg{
 	height: 200px;
 }
+#aboutTitle{
+	color: black;
+}
+#aboutTitle:hover{
+	color: grey;
+}
