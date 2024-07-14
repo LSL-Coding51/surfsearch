@@ -28,3 +28,6 @@ img{
 #aboutTitle:hover{
 	color: grey;
 }
+#login{
+  text-align: right;
+}
