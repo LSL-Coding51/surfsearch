@@ -8,8 +8,7 @@ ul {
 	overflow: hidden;
 }
 
-
-	li a {
+li #aboutLink {
 	display: block;
 	text-align: center;
 	padding: 14px 16px;
