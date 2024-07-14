@@ -8,7 +8,7 @@ ul {
 	overflow: hidden;
 }
 li{
-    float: center;
+    float: left;
 }
 li #aboutLink {
 	display: block;
